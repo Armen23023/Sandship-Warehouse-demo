@@ -35,10 +35,3 @@ Java
 #### Framework
 
 JUnit 3
-
-#### Database
-
-PostgreSQL
-
-## 
-
