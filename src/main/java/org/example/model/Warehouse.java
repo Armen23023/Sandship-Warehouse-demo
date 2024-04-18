@@ -1,14 +1,15 @@
 package org.example.model;
 
-import org.example.ExeptionHandler.QuantityException;
+
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Scanner;
+
 
 public class Warehouse {
-    private Map<MaterialType, Material> materials;
-    String name;
+   final private Map<MaterialType, Material> materials;
+   private String name;
 
     public Warehouse() {
         materials = new HashMap<>();
@@ -21,15 +22,20 @@ public class Warehouse {
 
 
     public boolean addMaterial(MaterialType type, int quantity) {
+
         if (materials.containsKey(type)) {
+
             Material material = materials.get(type);
             int newQuantity = material.getQuantity() + quantity;
+
             if (newQuantity <= type.getMaxCapacity()) {
                 material.setQuantity(newQuantity);
                 System.out.println("Material \"" + type.getName() + " \" added to " + this +" count : " + quantity);
                 return true;
             } else {
-                throw new QuantityException("The quantity is high than max capacity for " + type.getName());
+//                throw new QuantityException("The quantity is higher than max capacity for " + type.getName());
+                System.out.println("there isn't that much space in " + this);
+               return false;
             }
         } else {
             if (quantity <= type.getMaxCapacity()) {
@@ -38,7 +44,8 @@ public class Warehouse {
                 System.out.println("New material : " + type.getName() +" added to " + this + " :: Count : " + quantity);
                 return true;
             } else {
-                throw new QuantityException("The quantity is high than max capacity for " + type.getName());
+//                throw new QuantityException("The quantity is higher than max capacity for " + type.getName());
+                return false;
             }
         }
     }
@@ -77,23 +84,50 @@ public class Warehouse {
     }
 
 
-    public boolean moveMaterial(MaterialType type, int quantity, Warehouse targetWarehouse) {
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    public void moveMaterial(MaterialType type, int quantity, Warehouse targetWarehouse) {
+        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+
         if (this.claimMaterial(type, quantity)) {
              if(targetWarehouse.addMaterial(type, quantity)){
                  System.out.println("Materials \""+ type.getName() +"\" was moved from " + this + " to " + targetWarehouse);
-                 return true;
+
+             }else {
+                 System.out.println("The quantity is higher than max capacity for " + type.getName());
+                 System.out.println("Do you want to add it anyway? : write: YES or NO");
+                 String text = myObj.nextLine();
+                 if (text.equals("YES") || text.equals("yes")){
+                     int mover = type.getMaxCapacity() - targetWarehouse.materials.get(type).getQuantity();
+                        // this part for targetWarehouse
+                         Material targetMaterial =targetWarehouse.materials.get(type);
+                         int newQuantity = targetMaterial.getQuantity() + mover;
+                         targetMaterial.setQuantity(newQuantity);
+                         System.out.println("Material \"" + type.getName() + " \" added to " + targetWarehouse +" count : " + mover);
+
+                        //this part for rollback materials in this.warehouse
+                         Material material = this.materials.get(type);
+                         newQuantity = material.getQuantity() + (quantity - mover);
+                         material.setQuantity(newQuantity);
+                         System.out.println("the remaining material \""+ type.getName() +" \"is returned back to \"" +  this +" count : " + (quantity- mover));
+
+
+                 }if (text.equals("NO") || text.equals("no")){
+                     System.out.println("The materials were moved back to the warehouse: " + this);
+                 }
+                 else {
+                     System.out.println();
+                 }
              }
-             return true;
+
         } else {
             System.out.println("Materials  \""+ type.getName() +"\" didn't move from " + this + " to " + targetWarehouse);
 
-            return false;
         }
     }
-
+////////////////////////////////////////////////////////
 
     public  void printWarehouse(){
-        if (materials.size()>0){
+        if (!materials.isEmpty()){
             System.out.printf("--------------------------------%n");
             System.out.printf("           Warehouse  %n         "+ this + " %n");
             System.out.printf("--------------------------------%n");
