@@ -2,11 +2,16 @@ package org.example.model;
 
 
 
+import lombok.Getter;
+import lombok.Setter;
+import org.example.ExeptionHandler.QuantityException;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-
+@Getter
+@Setter
 public class Warehouse {
    final private Map<MaterialType, Material> materials;
    private String name;
@@ -21,7 +26,7 @@ public class Warehouse {
     }
 
 
-    public boolean addMaterial(MaterialType type, int quantity) {
+    public boolean addMaterial(MaterialType type, int quantity) throws QuantityException{
 
         if (materials.containsKey(type)) {
 
@@ -50,7 +55,7 @@ public class Warehouse {
         }
     }
 
-    public boolean claimMaterial(MaterialType type, int quantity) {
+    public boolean claimMaterial(MaterialType type, int quantity) throws QuantityException{
         if (materials.containsKey(type)) {
             Material material = materials.get(type);
             int newQuantity = material.getQuantity() - quantity;
@@ -113,6 +118,7 @@ public class Warehouse {
 
                  }if (text.equals("NO") || text.equals("no")){
                      System.out.println("The materials were moved back to the warehouse: " + this);
+                     this.addMaterial(type,quantity);
                  }
                  else {
                      System.out.println();

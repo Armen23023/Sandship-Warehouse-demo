@@ -21,10 +21,10 @@ public class App
 
 
             warehouse.addMaterial(metal,350);
-            warehouse.addMaterial(metal,500);
-            warehouse.printWarehouse();
+
+
             warehouse2.addMaterial(metal,400);
-            warehouse2.printWarehouse();
+
 
             warehouse.moveMaterial(metal,200,warehouse2);
 
