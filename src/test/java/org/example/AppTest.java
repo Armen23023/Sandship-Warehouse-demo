@@ -6,12 +6,16 @@ import junit.framework.TestSuite;
 import org.example.model.MaterialType;
 import org.example.model.Warehouse;
 
+import java.io.ByteArrayInputStream;
+
+
 /**
  * Unit test for simple App.
  */
 public class AppTest 
     extends TestCase
 {
+
 
     public AppTest( String testName )
     {
@@ -69,6 +73,12 @@ public class AppTest
 
     public void testMoveMaterials()
     {
+
+
+        ByteArrayInputStream testIn = new ByteArrayInputStream("yes\n".getBytes());
+        System.setIn(testIn);
+
+
         Warehouse warehouse = new Warehouse("Warehouse N1");
         Warehouse warehouse2 = new Warehouse("Warehouse N2");
         MaterialType metal = new MaterialType("Metal", "Hard", "icon", 500);
